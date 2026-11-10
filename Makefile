@@ -17,6 +17,8 @@ lint:
 	@for f in $(PERL_FILES); do perl -I. -I$(STUBS) -c $$f || exit 1; done
 	@for f in $(JS_FILES); do node --check $$f || exit 1; done
 	@sh -n scripts/pve-s3-bringup.sh scripts/pve-s3-export.sh scripts/pve-s3-health.sh scripts/lb/pve-s3-lb-deploy.sh
+	@cat debian/postinst.head debian/integrate.pl debian/postinst.tail | sh -n
+	@cat debian/postrm.head debian/integrate.pl debian/postrm.tail | sh -n
 	@echo "lint ok"
 
 test: lint deb

@@ -1,6 +1,7 @@
-    # Roles are bundles of stock privileges and are
-    # granted by the operator at /s3 paths; creating
-    # them grants nothing by itself.
+PVE_S3_INTEGRATE_EOF
+    # Roles are bundles of stock privileges. Creating
+    # them grants nothing; grant them to users/groups
+    # at stock ACL paths (/ or /pool/{pool}).
     pveum role add S3Auditor -privs \
         "Sys.Audit Datastore.Audit Pool.Audit" 2>/dev/null \
         || pveum role modify S3Auditor -privs \
