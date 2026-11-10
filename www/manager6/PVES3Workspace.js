@@ -345,6 +345,7 @@ Ext.define('PVE.dc.S3KeysWindow', {
                     handler: function() { createKey(); },
                 },
                 {
+                    xtype: 'proxmoxButton',
                     text: gettext('Rotate Key'),
                     iconCls: 'fa fa-refresh',
                     disabled: true,
@@ -376,6 +377,7 @@ Ext.define('PVE.dc.S3KeysWindow', {
                     },
                 },
                 {
+                    xtype: 'proxmoxButton',
                     text: gettext('Revoke Key'),
                     iconCls: 'fa fa-trash-o',
                     disabled: true,
@@ -493,6 +495,7 @@ Ext.define('PVE.dc.S3ObjectsWindow', {
                     },
                 },
                 {
+                    xtype: 'proxmoxButton',
                     text: gettext('Delete Object'),
                     iconCls: 'fa fa-trash-o',
                     disabled: true,
@@ -713,6 +716,7 @@ Ext.define('PVE.s3.GatewaysView', {
             ],
             tbar: [
                 {
+                    xtype: 'proxmoxButton',
                     text: gettext('Restart Gateway'),
                     iconCls: 'fa fa-refresh',
                     disabled: true,
@@ -779,6 +783,7 @@ Ext.define('PVE.s3.TenantsView', {
                     },
                 },
                 {
+                    xtype: 'proxmoxButton',
                     text: gettext('Create User'),
                     iconCls: 'fa fa-user-plus',
                     disabled: true,
@@ -842,6 +847,7 @@ Ext.define('PVE.s3.UsersView', {
                     },
                 },
                 {
+                    xtype: 'proxmoxButton',
                     text: gettext('Keys'),
                     iconCls: 'fa fa-key',
                     disabled: true,
@@ -860,6 +866,7 @@ Ext.define('PVE.s3.UsersView', {
                     },
                 },
                 {
+                    xtype: 'proxmoxButton',
                     text: gettext('Suspend'),
                     iconCls: 'fa fa-pause',
                     disabled: true,
@@ -881,6 +888,7 @@ Ext.define('PVE.s3.UsersView', {
                     },
                 },
                 {
+                    xtype: 'proxmoxButton',
                     text: gettext('Enable'),
                     iconCls: 'fa fa-play',
                     disabled: true,
@@ -902,6 +910,7 @@ Ext.define('PVE.s3.UsersView', {
                     },
                 },
                 {
+                    xtype: 'proxmoxButton',
                     text: gettext('Delete User'),
                     iconCls: 'fa fa-trash-o',
                     disabled: true,
@@ -972,6 +981,7 @@ Ext.define('PVE.s3.BucketsView', {
                     },
                 },
                 {
+                    xtype: 'proxmoxButton',
                     text: gettext('Objects'),
                     iconCls: 'fa fa-list',
                     disabled: true,
@@ -986,6 +996,7 @@ Ext.define('PVE.s3.BucketsView', {
                     },
                 },
                 {
+                    xtype: 'proxmoxButton',
                     text: gettext('Settings'),
                     iconCls: 'fa fa-cog',
                     disabled: true,
@@ -1000,6 +1011,7 @@ Ext.define('PVE.s3.BucketsView', {
                     },
                 },
                 {
+                    xtype: 'proxmoxButton',
                     text: gettext('Delete Bucket'),
                     iconCls: 'fa fa-trash-o',
                     disabled: true,
