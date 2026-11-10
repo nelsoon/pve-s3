@@ -1,0 +1,13 @@
+pve-s3-manager (0.1.2-1) bookworm; urgency=medium
+
+  * S3 Object Storage in the Proxmox VE UI (Datacenter,
+    grouped like Permissions): gateways, tenants
+    (PVE pools), users & keys, buckets & usage, health.
+  * API2 endpoints /cluster/s3 for gateways, users,
+    keys, tenants, buckets, objects, versioning,
+    lifecycle; keys returned once, never listed.
+  * Bucket object browsing and deletion; versioning
+    toggle; lifecycle panel rule.
+  * Ship pve-s3-bringup/export/health tools and
+    HAProxy/keepalived endpoint templates. Package
+    Depends pull radosgw, haproxy, keepalived.

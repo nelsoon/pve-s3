@@ -1,0 +1,20 @@
+    # Roles are bundles of stock privileges and are
+    # granted by the operator at /s3 paths; creating
+    # them grants nothing by itself.
+    pveum role add S3Auditor -privs \
+        "Sys.Audit Datastore.Audit Pool.Audit" 2>/dev/null \
+        || pveum role modify S3Auditor -privs \
+        "Sys.Audit Datastore.Audit Pool.Audit" || true
+    pveum role add S3UserAdmin -privs \
+        "Sys.Audit Datastore.Audit Pool.Audit User.Modify Datastore.AllocateSpace" \
+        2>/dev/null || true
+    pveum role add S3Admin -privs \
+        "Sys.Audit Datastore.Audit Pool.Audit User.Modify Datastore.AllocateSpace Datastore.Allocate Pool.Allocate Sys.Modify" \
+        2>/dev/null || true
+    if [ -d /run/systemd/system ]; then
+        systemctl try-restart pvedaemon.service \
+            pveproxy.service >/dev/null 2>&1 || true
+    fi
+fi
+
+exit 0

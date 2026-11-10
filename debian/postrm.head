@@ -1,0 +1,9 @@
+#!/bin/sh
+# pve-s3-manager postrm: remove the integration points
+# from stock pve-manager files. RGW data, realm/zone
+# state, and operator ACL grants stay untouched.
+if [ "$1" = "remove" ] || [ "$1" = "purge" ]; then
+    perl - remove <<'PVE_S3_INTEGRATE_EOF' || true
+#!/usr/bin/perl
+# Integration patcher for stock pve-manager files.
+# Applies (mode "apply", from postinst) or removes

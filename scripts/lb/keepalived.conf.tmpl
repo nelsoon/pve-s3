@@ -1,0 +1,30 @@
+global_defs {
+    router_id pve_s3
+    enable_script_security
+    script_user root
+}
+
+vrrp_script chk_haproxy {
+    script "/usr/bin/killall -0 haproxy"
+    interval 2
+    fall 2
+    rise 2
+}
+
+vrrp_instance VI_S3 {
+    state BACKUP
+    interface @IFACE@
+    virtual_router_id 60
+    priority @PRIORITY@
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass @PASS@
+    }
+    virtual_ipaddress {
+        @VIP@/24
+    }
+    track_script {
+        chk_haproxy
+    }
+}

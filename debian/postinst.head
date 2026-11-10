@@ -1,0 +1,9 @@
+#!/bin/sh
+# pve-s3-manager postinst. Applies the INTEGRATION.md
+# patches (embedded below from debian/integrate.pl),
+# creates the S3 roles, and restarts the PVE daemons.
+# Integration failures warn but never fail install.
+set -e
+
+if [ "$1" = "configure" ]; then
+    perl - apply <<'PVE_S3_INTEGRATE_EOF' || true
