@@ -305,17 +305,19 @@ Ext.define('PVE.dc.S3KeysWindow', {
             fields: ['access-key', 'created', 'active'],
             proxy: {
                 type: 'proxmox',
-                url: '/api2/json/cluster/s3/users/keys',
-                extraParams: { uid: me.uid, tenant: me.tenant || undefined },
+                url: '/api2/json/cluster/s3/users/' + encodeURIComponent(me.uid) + '/keys',
+                extraParams: { tenant: me.tenant || undefined },
             },
             autoLoad: true,
         });
         let sm = Ext.create('Ext.selection.RowModel', {});
         let createKey = function(done) {
+            let keyPostUrl = '/cluster/s3/users/'
+                + encodeURIComponent(me.uid) + '/keys';
             PVE.s3.API.request({
-                url: '/cluster/s3/users/key',
+                url: keyPostUrl,
                 method: 'POST',
-                params: { uid: me.uid, tenant: me.tenant || undefined },
+                params: { tenant: me.tenant || undefined },
                 success: function(r) {
                     store.load();
                     Ext.create('PVE.dc.S3KeyWindow', {
@@ -390,14 +392,16 @@ Ext.define('PVE.dc.S3KeysWindow', {
                             gettext('Revoke key ') + rec.get('access-key') + '?',
                             function(answer) {
                                 if (answer !== 'yes') { return; }
+                                let keyUrl = '/cluster/s3/users/'
+                                    + encodeURIComponent(me.uid) + '/keys/'
+                                    + encodeURIComponent(rec.get('access-key'));
+                                if (me.tenant) {
+                                    keyUrl += '?tenant='
+                                        + encodeURIComponent(me.tenant);
+                                }
                                 PVE.s3.API.request({
-                                    url: '/cluster/s3/users/key',
+                                    url: keyUrl,
                                     method: 'DELETE',
-                                    params: {
-                                        uid: me.uid,
-                                        'access-key': rec.get('access-key'),
-                                        tenant: me.tenant || undefined,
-                                    },
                                     success: function() { store.load(); },
                                 });
                             });
@@ -439,8 +443,8 @@ Ext.define('PVE.dc.S3ObjectsWindow', {
             fields: ['key', 'type', 'size', 'modified', 'storage'],
             proxy: {
                 type: 'proxmox',
-                url: '/api2/json/cluster/s3/buckets/objects',
-                extraParams: { bucket: me.bucket, delimiter: '/' },
+                url: '/api2/json/cluster/s3/buckets/' + encodeURIComponent(me.bucket) + '/objects',
+                extraParams: { delimiter: '/' },
             },
             autoLoad: false,
         });
@@ -511,12 +515,11 @@ Ext.define('PVE.dc.S3ObjectsWindow', {
                             function(answer) {
                                 if (answer !== 'yes') { return; }
                                 PVE.s3.API.request({
-                                    url: '/cluster/s3/buckets/objects',
+                                    url: '/cluster/s3/buckets/'
+                                        + encodeURIComponent(me.bucket)
+                                        + '/objects?key='
+                                        + encodeURIComponent(rec.get('key')),
                                     method: 'DELETE',
-                                    params: {
-                                        bucket: me.bucket,
-                                        key: rec.get('key'),
-                                    },
                                     success: load,
                                 });
                             });
@@ -597,10 +600,11 @@ Ext.define('PVE.dc.S3BucketSettingsWindow', {
                         if (v.versioning) {
                             saves.push(new Promise(function(res) {
                                 PVE.s3.API.request({
-                                    url: '/cluster/s3/buckets/versioning',
+                                    url: '/cluster/s3/buckets/'
+                                        + encodeURIComponent(me.bucket)
+                                        + '/versioning',
                                     method: 'POST',
                                     params: {
-                                        bucket: me.bucket,
                                         status: v.versioning,
                                     },
                                     success: res,
@@ -610,10 +614,11 @@ Ext.define('PVE.dc.S3BucketSettingsWindow', {
                         }
                         saves.push(new Promise(function(res) {
                             PVE.s3.API.request({
-                                url: '/cluster/s3/buckets/lifecycle',
+                                url: '/cluster/s3/buckets/'
+                                    + encodeURIComponent(me.bucket)
+                                    + '/lifecycle',
                                 method: 'POST',
                                 params: {
-                                    bucket: me.bucket,
                                     'expiration-days': v['expiration-days'] || 0,
                                     'noncurrent-days': v['noncurrent-days'] || 0,
                                     'abort-days': v['abort-days'] || 0,
@@ -630,9 +635,8 @@ Ext.define('PVE.dc.S3BucketSettingsWindow', {
         me.items = [form];
         me.callParent();
         PVE.s3.API.request({
-            url: '/cluster/s3/buckets/settings',
+            url: '/cluster/s3/buckets/' + encodeURIComponent(me.bucket) + '/settings',
             method: 'GET',
-            params: { bucket: me.bucket },
             success: function(r) {
                 let d = r.result.data || {};
                 form.getForm().setValues({
@@ -875,11 +879,13 @@ Ext.define('PVE.s3.UsersView', {
                     handler: function() {
                         let rec = sm.getSelection()[0];
                         if (!rec) { return; }
+                        let suspUrl = '/cluster/s3/users/'
+                            + encodeURIComponent(rec.get('uid'))
+                            + '/suspend';
                         PVE.s3.API.request({
-                            url: '/cluster/s3/users/suspend',
+                            url: suspUrl,
                             method: 'POST',
                             params: {
-                                uid: rec.get('uid'),
                                 tenant: rec.get('tenant') || undefined,
                                 suspend: 1,
                             },
@@ -897,11 +903,13 @@ Ext.define('PVE.s3.UsersView', {
                     handler: function() {
                         let rec = sm.getSelection()[0];
                         if (!rec) { return; }
+                        let suspUrl = '/cluster/s3/users/'
+                            + encodeURIComponent(rec.get('uid'))
+                            + '/suspend';
                         PVE.s3.API.request({
-                            url: '/cluster/s3/users/suspend',
+                            url: suspUrl,
                             method: 'POST',
                             params: {
-                                uid: rec.get('uid'),
                                 tenant: rec.get('tenant') || undefined,
                                 suspend: 0,
                             },
@@ -923,13 +931,15 @@ Ext.define('PVE.s3.UsersView', {
                             gettext('Delete user ') + rec.get('uid') + '?',
                             function(answer) {
                                 if (answer !== 'yes') { return; }
+                                let userUrl = '/cluster/s3/users/'
+                                    + encodeURIComponent(rec.get('uid'));
+                                if (rec.get('tenant')) {
+                                    userUrl += '?tenant='
+                                        + encodeURIComponent(rec.get('tenant'));
+                                }
                                 PVE.s3.API.request({
-                                    url: '/cluster/s3/users',
+                                    url: userUrl,
                                     method: 'DELETE',
-                                    params: {
-                                        uid: rec.get('uid'),
-                                        tenant: rec.get('tenant') || undefined,
-                                    },
                                     success: function() { store.load(); },
                                 });
                             });
@@ -1026,9 +1036,9 @@ Ext.define('PVE.s3.BucketsView', {
                             function(answer) {
                                 if (answer !== 'yes') { return; }
                                 PVE.s3.API.request({
-                                    url: '/cluster/s3/buckets',
+                                    url: '/cluster/s3/buckets/'
+                                        + encodeURIComponent(rec.get('bucket')),
                                     method: 'DELETE',
-                                    params: { bucket: rec.get('bucket') },
                                     success: function() { store.load(); },
                                 });
                             });

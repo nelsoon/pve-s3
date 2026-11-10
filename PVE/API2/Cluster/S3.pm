@@ -533,7 +533,7 @@ __PACKAGE__->register_method({
 
 __PACKAGE__->register_method({
     name => 'user_delete',
-    path => 'users',
+    path => 'users/{uid}',
     method => 'DELETE',
     protected => 1,
     description => "Delete an S3 user.",
@@ -561,7 +561,7 @@ __PACKAGE__->register_method({
 
 __PACKAGE__->register_method({
     name => 'key_create',
-    path => 'users/key',
+    path => 'users/{uid}/keys',
     method => 'POST',
     protected => 1,
     description => "Create a key for a user. Returned once.",
@@ -592,7 +592,7 @@ __PACKAGE__->register_method({
 
 __PACKAGE__->register_method({
     name => 'key_delete',
-    path => 'users/key',
+    path => 'users/{uid}/keys/{access-key}',
     method => 'DELETE',
     protected => 1,
     description => "Revoke a user's access key.",
@@ -622,7 +622,7 @@ __PACKAGE__->register_method({
 
 __PACKAGE__->register_method({
     name => 'keys_list',
-    path => 'users/keys',
+    path => 'users/{uid}/keys',
     method => 'GET',
     protected => 1,
     description => "List a user's access keys (never secrets).",
@@ -657,7 +657,7 @@ __PACKAGE__->register_method({
 
 __PACKAGE__->register_method({
     name => 'user_suspend',
-    path => 'users/suspend',
+    path => 'users/{uid}/suspend',
     method => 'POST',
     protected => 1,
     description => "Suspend (1) or re-enable (0) an S3 user.",
@@ -762,7 +762,7 @@ __PACKAGE__->register_method({
 
 __PACKAGE__->register_method({
     name => 'objects_list',
-    path => 'buckets/objects',
+    path => 'buckets/{bucket}/objects',
     method => 'GET',
     protected => 1,
     description => "List objects in a bucket (ListObjectsV2).",
@@ -817,7 +817,7 @@ __PACKAGE__->register_method({
 
 __PACKAGE__->register_method({
     name => 'object_delete',
-    path => 'buckets/objects',
+    path => 'buckets/{bucket}/objects',
     method => 'DELETE',
     protected => 1,
     description => "Delete one object from a bucket.",
@@ -846,7 +846,7 @@ __PACKAGE__->register_method({
 
 __PACKAGE__->register_method({
     name => 'bucket_settings',
-    path => 'buckets/settings',
+    path => 'buckets/{bucket}/settings',
     method => 'GET',
     protected => 1,
     description => "Bucket versioning and lifecycle settings.",
@@ -890,7 +890,7 @@ __PACKAGE__->register_method({
 
 __PACKAGE__->register_method({
     name => 'bucket_versioning',
-    path => 'buckets/versioning',
+    path => 'buckets/{bucket}/versioning',
     method => 'POST',
     protected => 1,
     description => "Enable or suspend bucket versioning.",
@@ -925,7 +925,7 @@ __PACKAGE__->register_method({
 
 __PACKAGE__->register_method({
     name => 'bucket_lifecycle',
-    path => 'buckets/lifecycle',
+    path => 'buckets/{bucket}/lifecycle',
     method => 'POST',
     protected => 1,
     description => "Set (or clear, all-zero) the panel lifecycle rule.",
@@ -979,7 +979,7 @@ __PACKAGE__->register_method({
 
 __PACKAGE__->register_method({
     name => 'bucket_delete',
-    path => 'buckets',
+    path => 'buckets/{bucket}',
     method => 'DELETE',
     protected => 1,
     description => "Delete a bucket (purge objects).",
